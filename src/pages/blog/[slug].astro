@@ -40,7 +40,10 @@ const formattedKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywor
 
 </head>
 <body class="bg-gray-100 font-sans antialiased">
-  <div class="container mx-auto py-10">
+  <div class="container mx-auto py-10 max-w-[960px] px-4 md:px-0">
+    <div class="mb-4">
+      <a href={`${import.meta.env.BASE_URL}`} class="hover:underline text-blue-500">🏠 Back to home</a>
+    </div>
     <header class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">{title}</h1>
       <p class="text-sm text-gray-500 mt-1">Published on <time datetime={new Date().toISOString().slice(0, 10)}>{new Date().toLocaleDateString()}</time></p>
