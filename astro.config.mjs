@@ -7,4 +7,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  site: "https://alfathmuqoddas.github.io",
+  base: "astro-static-blog",
 });
