@@ -1,0 +1,67 @@
+---
+import { pages } from '../../utils/generatePages';
+import "../../styles/global.css";
+
+
+export async function getStaticPaths() {
+  return pages.map(({ slug, image, post, title, description, keywords }) => {
+    return {
+      params: { slug },
+      props: { image, post, title, description, keywords },
+    };
+  });
+}
+
+const { image, post, title, description, keywords } = Astro.props;
+const formattedKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="keywords" content={formattedKeywords} />
+
+  {/* Open Graph / Facebook */}
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={`https://picsum.photos/seed/${image}/1200/630`} />
+  <meta property="og:url" content={Astro.url.pathname} />
+  <meta property="og:site_name" content={'Your Blog Name'} /> {/* Replace with your site name */}
+
+  {/* Twitter */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={`https://picsum.photos/seed/${image}/1200/675`} />
+
+  {/* Tailwind CSS Directives */}
+  <link rel="stylesheet" href="/tailwind.css" /> {/* Assuming you have a tailwind.css file */}
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+  <div class="container mx-auto py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">{title}</h1>
+      <p class="text-sm text-gray-500 mt-1">Published on <time datetime={new Date().toISOString().slice(0, 10)}>{new Date().toLocaleDateString()}</time></p>
+    </header>
+
+    <main class="bg-white shadow-md rounded-lg overflow-hidden">
+      <figure class="aspect-w-16 aspect-h-9">
+        <img class="object-cover w-full h-full" src={`https://picsum.photos/seed/${image}/1200/675`} alt={title} />
+      </figure>
+      <div class="p-6">
+        <div class="text-justify max-w-1/2 mx-auto">
+          <p>{post}</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="mt-8 text-center text-gray-600 text-sm">
+      <p>&copy; {new Date().getFullYear()} Your Blog Name. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,11 +1,55 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { pages } from '../utils/generatePages';
+import "../styles/global.css";
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Index</title>
+  <link rel="stylesheet" href="/tailwind.css" />
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+  <div class="container mx-auto py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Our Blog</h1>
+    </header>
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {pages.map((post) => (
+        <div class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+          <div class="aspect-w-16 aspect-h-9">
+            <img
+              class="object-cover w-full h-full"
+              src={`https://picsum.photos/seed/${post.image}/600/400`}
+              alt={post.title}
+			  loading="lazy"
+            />
+          </div>
+          <div class="p-6 flex-grow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">
+              <a href={`/blog/${post.slug}`} class="hover:text-blue-500">
+                {post.title}
+              </a>
+            </h2>
+            <p class="text-gray-600 text-sm flex-grow">
+              {post.description ? post.description.substring(0, 100) + '...' : 'No description available.'}
+            </p>
+            <div class="mt-4">
+              <a
+                href={`/blog/${post.slug}`}
+                class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              >
+                Read More
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </main>
+    <footer class="mt-8 text-center text-gray-600 text-sm">
+      <p>&copy; {new Date().getFullYear()} Your Blog Name. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
