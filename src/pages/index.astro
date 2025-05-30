@@ -14,9 +14,11 @@ import "../styles/global.css";
     <header class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Our Blog</h1>
     </header>
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {pages.map((post) => (
-        <div class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+              
+        <div class="bg-white shadow-md rounded-2xl overflow-hidden flex flex-col group hover:scale-105 transition-transform duration-100">
+          <a href={`${import.meta.env.BASE_URL}/blog/${post.slug}`}>
           <div class="aspect-w-16 aspect-h-9">
             <img
               class="object-cover w-full h-full"
@@ -26,10 +28,8 @@ import "../styles/global.css";
             />
           </div>
           <div class="p-6 flex-grow">
-            <h2 class="text-xl font-semibold text-gray-800 mb-2">
-              <a href={`${import.meta.env.BASE_URL}/blog/${post.slug}`} class="hover:text-blue-500">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-500">
                 {post.title}
-              </a>
             </h2>
             <p class="text-gray-600 text-sm flex-grow">
               {post.description ? post.description.substring(0, 100) + '...' : 'No description available.'}
@@ -43,7 +43,10 @@ import "../styles/global.css";
               </a>
             </div>
           </div>
+      </a>
+
         </div>
+
       ))}
     </main>
     <footer class="mt-8 text-center text-gray-600 text-sm">

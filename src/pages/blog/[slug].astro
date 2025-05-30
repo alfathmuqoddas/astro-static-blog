@@ -42,18 +42,18 @@ const formattedKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywor
 <body class="bg-gray-100 font-sans antialiased">
   <div class="container mx-auto py-10 max-w-[960px] px-4 md:px-0">
     <div class="mb-4">
-      <a href={`${import.meta.env.BASE_URL}`} class="hover:underline text-blue-500">🏠 Back to home</a>
+      <a href={`${import.meta.env.BASE_URL}`} class="hover:underline text-blue-500 hover:underline-offset-4">🏠 Back to home</a>
     </div>
     <header class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">{title}</h1>
       <p class="text-sm text-gray-500 mt-1">Published on <time datetime={new Date().toISOString().slice(0, 10)}>{new Date().toLocaleDateString()}</time></p>
     </header>
 
-    <main class="bg-white shadow-md rounded-lg overflow-hidden">
+    <main class="lg:bg-white lg:shadow-md rounded-2xl overflow-hidden">
       <figure class="aspect-w-16 aspect-h-9">
-        <img class="object-cover w-full h-full" src={`https://picsum.photos/seed/${image}/1200/675`} alt={title} />
+        <img class="object-cover rounded-2xl w-full h-full" src={`https://picsum.photos/seed/${image}/1200/675`} alt={title} />
       </figure>
-      <div class="p-6">
+      <div class="lg:p-6 pt-6">
         <div class="text-justify w-full mx-auto">
           <p>{post}</p>
         </div>
