@@ -1,68 +1,115 @@
 ---
-import { pages } from '../../utils/generatePages';
+import { getCollection, render } from 'astro:content';
 import "../../styles/global.css";
 
-
 export async function getStaticPaths() {
-  return pages.map(({ slug, image, post, title, description, keywords }) => {
-    return {
-      params: { slug },
-      props: { image, post, title, description, keywords },
-    };
-  });
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
 }
 
-const { image, post, title, description, keywords } = Astro.props;
+const { entry } = Astro.props;
+const { title, description, image, keywords, pubDate } = entry.data;
+const { Content } = await render(entry);
+
 const formattedKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+const displayDate = pubDate ? new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}) : 'Recently Published';
 ---
 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title}</title>
+  <title>{title} | My Blog</title>
   <meta name="description" content={description} />
   <meta name="keywords" content={formattedKeywords} />
-
-  {/* Open Graph / Facebook */}
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image" content={`https://picsum.photos/seed/${image}/1200/630`} />
-  <meta property="og:url" content={Astro.url.pathname} />
-  <meta property="og:site_name" content={'Your Blog Name'} /> {/* Replace with your site name */}
-
-  {/* Twitter */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={`https://picsum.photos/seed/${image}/1200/675`} />
-
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans antialiased">
-  <div class="container mx-auto py-10 max-w-[960px] px-4 md:px-0">
-    <div class="mb-4">
-      <a href={`${import.meta.env.BASE_URL}`} class="hover:underline text-blue-500 hover:underline-offset-4">🏠 Back to home</a>
+
+<body class="bg-slate-50 font-sans text-slate-900 antialiased selection:bg-blue-100">
+  
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href={`${import.meta.env.BASE_URL}`} class="font-bold text-xl tracking-tight text-blue-600">MyBlog</a>
+      <!-- <a href="import.meta.env.BASE_URL" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">All Posts</a> -->
     </div>
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">{title}</h1>
-      <p class="text-sm text-gray-500 mt-1">Published on <time datetime={new Date().toISOString().slice(0, 10)}>{new Date().toLocaleDateString()}</time></p>
+  </nav>
+
+  <article class="max-w-3xl mx-auto px-6 py-12 lg:py-20">
+    
+    <header class="mb-12 text-center">
+      <div class="flex items-center justify-center gap-2 mb-4">
+        {Array.isArray(keywords) && keywords.slice(0, 2).map(tag => (
+          <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold uppercase tracking-wider rounded-full">
+            {tag}
+          </span>
+        ))}
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      
+      <div class="flex items-center justify-center text-slate-500 text-sm">
+        <span>{displayDate}</span>
+        <span class="mx-3 text-slate-300">•</span>
+        <span>5 min read</span>
+      </div>
     </header>
 
-    <main class="lg:bg-white lg:shadow-md rounded-2xl overflow-hidden">
-      <figure class="aspect-w-16 aspect-h-9">
-        <img class="object-cover rounded-2xl w-full h-full" src={`https://picsum.photos/seed/${image}/1200/675`} alt={title} />
-      </figure>
-      <div class="lg:p-6 pt-6">
-        <div class="text-justify w-full mx-auto">
-          <p>{post}</p>
-        </div>
-      </div>
+    <div class="mb-12">
+      <img 
+        class="w-full h-auto rounded-3xl shadow-xl shadow-slate-200 object-cover aspect-[16/9]" 
+        src={`https://picsum.photos/seed/${image}/1200/675`} 
+        alt={title} 
+      />
+    </div>
+
+    <main class="prose prose-slate prose-lg max-w-none 
+      prose-headings:font-bold prose-headings:tracking-tight 
+      prose-a:text-blue-600 prose-img:rounded-2xl
+      font-serif">
+      <Content />
     </main>
 
-    <footer class="mt-8 text-center text-gray-600 text-sm">
-      <p>&copy; {new Date().getFullYear()} Your Blog Name. All rights reserved.</p>
+    <footer class="mt-16 pt-8 border-t border-slate-200">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 class="font-semibold text-slate-900">Thanks for reading!</h3>
+          <p class="text-slate-500 text-sm mt-1">Found this helpful? Share it with others.</p>
+        </div>
+        <div class="flex gap-4">
+            <button class="p-2 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition">
+                <span class="sr-only">Share on Twitter</span>
+                🐦
+            </button>
+        </div>
+      </div>
     </footer>
-  </div>
+    
+  </article>
+
+  <footer class="bg-white border-t border-slate-200 py-12 mt-12">
+    <div class="max-w-3xl mx-auto px-6 text-center text-slate-500 text-sm">
+      <p>&copy; {new Date().getFullYear()} MyBlog. Built with Astro & Tailwind.</p>
+    </div>
+  </footer>
+
 </body>
 </html>
+
+<style is:global>
+  /* Use Lora for the article body for a premium feel */
+  .prose {
+    font-family: 'Lora', serif;
+  }
+</style>
