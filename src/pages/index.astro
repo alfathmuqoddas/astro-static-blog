@@ -1,58 +1,110 @@
 ---
-import { pages } from '../utils/generatePages';
+import { getCollection } from 'astro:content';
 import "../styles/global.css";
+
+const blogEntries = await getCollection('blog');
+
+const allPosts = blogEntries.map(entry => ({
+    title: entry.data.title,
+    slug: entry.slug,
+    image: entry.data.image || 'default',
+    description: entry.data.description,
+    pubDate: entry.data.pubDate,
+    category: entry.data.keywords?.[0] || 'Article'
+})).reverse();
+
+const featuredPost = allPosts[0];
+const remainingPosts = allPosts.slice(1);
 ---
 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog Index</title>
+  <title>Blog | Insights & Stories</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans antialiased">
-  <div class="mx-auto py-10 px-8">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Our Blog</h1>
+<body class="bg-slate-50 font-sans text-slate-900 antialiased">
+  
+  <nav class="bg-white border-b border-slate-200 py-4">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href="/" class="font-bold text-2xl text-blue-600 tracking-tight">MyBlog</a>
+      <div class="space-x-6 text-sm font-medium text-slate-600">
+        <a href="/" class="hover:text-blue-600 transition">Home</a>
+        <a href="/about" class="hover:text-blue-600 transition">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <header class="mb-16">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
+        Latest Insights
+      </h1>
+      <p class="text-lg text-slate-600 max-w-2xl">
+        Thoughts, tutorials, and stories from our team. Stay updated with the latest in technology and design.
+      </p>
     </header>
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {pages.map((post) => (
-              
-        <div class="bg-white shadow-md rounded-2xl overflow-hidden flex flex-col group hover:scale-105 transition-transform duration-100">
-          <a href={`${import.meta.env.BASE_URL}/blog/${post.slug}`}>
-          <div class="aspect-w-16 aspect-h-9">
-            <img
-              class="object-cover w-full h-full"
-              src={`https://picsum.photos/seed/${post.image}/600/400`}
-              alt={post.title}
-			  loading="lazy"
-	      width="600"
-              height="400"
-            />
-          </div>
-          <div class="p-6 flex-grow">
-            <h2 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-500">
-                {post.title}
-            </h2>
-            <p class="text-gray-600 text-sm flex-grow">
-              {post.description ? post.description.substring(0, 100) + '...' : 'No description available.'}
-            </p>
-            <div class="mt-4">
-              <a
-                href={`${import.meta.env.BASE_URL}/blog/${post.slug}`}
-                class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-              >
-                Read More
-              </a>
+
+    <main>
+      {featuredPost && (
+        <section class="mb-16">
+          <a href={import.meta.env.BASE_URL + `/blog/${featuredPost.slug}`} class="group relative grid md:grid-cols-2 gap-8 items-center bg-white p-4 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300">
+            <div class="overflow-hidden rounded-2xl">
+              <img 
+                src={`https://picsum.photos/seed/${featuredPost.image}/800/500`} 
+                alt={featuredPost.title}
+                class="w-full h-full object-cover aspect-[4/3] group-hover:scale-105 transition duration-500"
+              />
             </div>
-          </div>
-      </a>
+            <div class="pr-6">
+              <span class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2 block">{featuredPost.category}</span>
+              <h2 class="text-3xl font-bold mb-4 group-hover:text-blue-600 transition">{featuredPost.title}</h2>
+              <p class="text-slate-600 mb-6 line-clamp-3">{featuredPost.description}</p>
+              <span class="inline-flex items-center text-sm font-semibold text-blue-600">
+                Read Featured Post 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </div>
+          </a>
+        </section>
+      )}
 
-        </div>
-
-      ))}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {remainingPosts.map((post) => (
+          <article class="group flex flex-col">
+            <a href={import.meta.env.BASE_URL + `/blog/${post.slug}`} class="block mb-4 overflow-hidden rounded-2xl">
+              <img
+                class="object-cover w-full aspect-video group-hover:scale-105 transition duration-500"
+                src={`https://picsum.photos/seed/${post.image}/600/400`}
+                alt={post.title}
+                loading="lazy"
+              />
+            </a>
+            <div class="flex-grow">
+              <span class="text-blue-600 font-bold text-[10px] uppercase tracking-widest mb-1 block">
+                {post.category}
+              </span>
+              <a href={import.meta.env.BASE_URL + `/blog/${post.slug}`} class="block group-hover:text-blue-600 transition"></a>
+                <h2 class="text-xl font-bold text-slate-900 mb-2 leading-tight">
+                  {post.title}
+                </h2>
+              </a>
+              <p class="text-slate-600 text-sm line-clamp-2 mb-4">
+                {post.description}
+              </p>
+            </div>
+            <div class="pt-4 mt-auto border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-400">5 min read</span>
+                <a href={import.meta.env.BASE_URL + `/blog/${post.slug}`} class="text-xs font-bold text-slate-900 uppercase tracking-tighter hover:text-blue-600">Read More</a>
+            </div>
+          </article>
+        ))}
+      </div>
     </main>
-    <footer class="mt-8 text-center text-gray-600 text-sm">
-      <p>&copy; {new Date().getFullYear()} Your Blog Name. All rights reserved.</p>
+
+    <footer class="mt-20 py-10 border-t border-slate-200 text-center">
+      <p class="text-slate-500 text-sm">&copy; {new Date().getFullYear()} Your Blog Name. All rights reserved.</p>
     </footer>
   </div>
 </body>
