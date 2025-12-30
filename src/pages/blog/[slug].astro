@@ -20,11 +20,10 @@ const displayDate = pubDate ? new Date(pubDate).toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 }) : 'Recently Published';
-console.log({headings})
 ---
 
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} isBlog navigation={headings}>
     <header class="mb-12 text-center">
       <div class="flex items-center justify-center gap-2 mb-4">
         {Array.isArray(keywords) && keywords.slice(0, 2).map(tag => (
