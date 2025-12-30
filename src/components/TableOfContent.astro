@@ -5,11 +5,20 @@ interface Props {
 const { navigation } = Astro.props;
 ---
 <aside class="hidden lg:block">
-  <div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pr-4 custom-scrollbar">
-    <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-      On this page
-    </h2>
-    <nav>
+  <details 
+    class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pr-4 custom-scrollbar group" 
+    open
+  >
+    <summary class="list-none cursor-pointer outline-none">
+      <h2 class="inline-flex items-center text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 hover:text-slate-600 transition-colors">
+        On this page
+        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-3 w-3 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+        </svg>
+      </h2>
+    </summary>
+
+    <nav class="pb-4">
       <ul class="space-y-3 border-l border-slate-200 ml-1">
         {navigation.map((heading) => (
           <li class:list={[
@@ -26,12 +35,11 @@ const { navigation } = Astro.props;
         ))}
       </ul>
     </nav>
-  </div>
+  </details>
 </aside>
 
 <style>
-  /* Optional: Make the sidebar scrollbar slim and elegant */
-  .custom-scrollbar::-webkit-scrollbar {
+    .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -43,5 +51,8 @@ const { navigation } = Astro.props;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #cbd5e1; /* slate-300 */
+  }
+  summary::-webkit-details-marker {
+    display: none;
   }
 </style>
