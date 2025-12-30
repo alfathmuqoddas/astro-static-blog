@@ -21,8 +21,6 @@ Astro.js encourages a different mindset: **ship less JavaScript by default**. As
 
 In this article, we’ll explore **UI components that are commonly implemented with JavaScript but can be replaced entirely with HTML and CSS**, along with when you _should_ still reach for JavaScript.
 
----
-
 ## Why Avoid JavaScript for Simple UI?
 
 Before diving into components, it’s important to understand _why_ this matters—especially in Astro projects.
@@ -43,8 +41,6 @@ Before diving into components, it’s important to understand _why_ this matters
 - Canvas, WebGL, or advanced animations
 
 Astro allows you to selectively add JavaScript _only where needed_.
-
----
 
 ## 1. Accordion / Disclosure Panels
 
@@ -85,8 +81,6 @@ details[open] summary {
 
 - Multiple open panels with synchronization
 - Animations beyond simple transitions
-
----
 
 ## 2. Tabs
 
@@ -137,8 +131,6 @@ Tabs are often built using state and conditional rendering.
 - URL-based tabs require JavaScript
 - More complex keyboard navigation may need enhancements
 
----
-
 ## 3. Modal / Dialog
 
 ### JavaScript Modal (Typical)
@@ -171,8 +163,6 @@ Usually involves:
 - Clean semantics
 
 In Astro, this tiny script can live in an island or inline script.
-
----
 
 ## 4. Dropdown Menus
 
@@ -208,8 +198,6 @@ Often implemented with click handlers and outside-click detection.
 - Use `<button>` instead of `<div>`
 - Ensure keyboard focus order
 
----
-
 ## 5. Toggle Switches
 
 ### JavaScript Toggles
@@ -236,8 +224,6 @@ Often tied to state variables.
 - State lives in the DOM
 - Form-compatible
 - Can be progressively enhanced later
-
----
 
 ## 6. Tooltips
 
@@ -268,8 +254,6 @@ button:hover + [role="tooltip"] {
 - Screen-reader friendly
 - Simple positioning
 
----
-
 ## 7. Image Carousels (Simple)
 
 ### CSS Scroll Snap
@@ -292,8 +276,6 @@ button:hover + [role="tooltip"] {
 - No complex navigation
 - Touch-friendly by default
 
----
-
 ## How This Fits Perfectly with Astro
 
 Astro’s philosophy aligns perfectly with these techniques:
@@ -314,8 +296,6 @@ import FancyCarousel from '../components/FancyCarousel.jsx';
 <FancyCarousel client:visible />
 ```
 
----
-
 ## Decision Checklist: Do You Really Need JavaScript?
 
 Before writing JS for a UI component, ask:
@@ -326,8 +306,6 @@ Before writing JS for a UI component, ask:
 - Does it need persistence or data fetching?
 
 If the answer is _no_ to most of these—skip JavaScript.
-
----
 
 ## Conclusion
 
