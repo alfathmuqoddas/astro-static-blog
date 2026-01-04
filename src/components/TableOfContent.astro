@@ -55,4 +55,48 @@ const { navigation } = Astro.props;
   summary::-webkit-details-marker {
     display: none;
   }
+  .toc-active {
+    color: #2563eb; /* blue-600 */
+    border-left-color: #60a5fa; /* blue-400 */
+    font-weight: 600;
+  }
 </style>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Scope to the main content column
+    const content = document.querySelector("main .min-w-0");
+    if (!content) return;
+
+    const headings = content.querySelectorAll("h2[id], h3[id]");
+    const links = document.querySelectorAll('aside a[href^="#"]');
+
+    if (!headings.length || !links.length) return;
+
+    const linkMap = new Map();
+    links.forEach(link => {
+      const id = link.getAttribute("href")?.slice(1);
+      if (id) linkMap.set(id, link);
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          const link = linkMap.get(entry.target.id);
+          if (!link) return;
+
+          links.forEach(l => l.classList.remove("toc-active"));
+          link.classList.add("toc-active");
+        });
+      },
+      {
+        rootMargin: "0px 0px -70% 0px",
+        threshold: 0.1
+      }
+    );
+
+    headings.forEach(h => observer.observe(h));
+  });
+</script>
